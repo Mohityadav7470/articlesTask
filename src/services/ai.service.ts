@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config({
     path: "./.env",
 })
-const genAI = new GoogleGenerativeAI("AIzaSyBwhFNgW_-uQ00DC4U3-RrCgTjv87BCS7k");
+const genAI = new GoogleGenerativeAI("google gemini api key");
 
 
 
