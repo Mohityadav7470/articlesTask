@@ -1,9 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 dotenv.config({
-  path: "./.env",
-});
-const genAI = new GoogleGenerativeAI("AIzaSyBwhFNgW_-uQ00DC4U3-RrCgTjv87BCS7k");
+    path: "./.env",
+})
+const genAI = new GoogleGenerativeAI("google gemini api key");
 
 export const getDescriptionFromDeepAI = async (
   topic: string
