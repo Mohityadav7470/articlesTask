@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getDescriptionFromDeepAI } from "../services/ai.service"
+import { getDescriptionFromDeepAI } from "../services/ai.service";
 
 export const generateDescription = async (req: Request, res: Response) => {
   const { topic } = req.body;

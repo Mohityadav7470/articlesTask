@@ -1,6 +1,6 @@
 // models/ArticleVersion.ts
-import mongoose, { Document, Schema } from 'mongoose';
-import { toJSONPlugin } from '../utils/toJSONPlugin';
+import mongoose, { Document, Schema } from "mongoose";
+import { toJSONPlugin } from "../utils/toJSONPlugin";
 
 export interface IArticleVersion extends Document {
   article: mongoose.Types.ObjectId;
@@ -9,12 +9,12 @@ export interface IArticleVersion extends Document {
 }
 
 const articleVersionSchema = new Schema<IArticleVersion>({
-  article: { type: Schema.Types.ObjectId, ref: 'Article', required: true },
+  article: { type: Schema.Types.ObjectId, ref: "Article", required: true },
   description: { type: String, required: true },
   updatedAt: { type: Date, default: Date.now },
 });
-articleVersionSchema.plugin(toJSONPlugin)
+articleVersionSchema.plugin(toJSONPlugin);
 export const ArticleVersion = mongoose.model<IArticleVersion>(
-  'ArticleVersion',
+  "ArticleVersion",
   articleVersionSchema
 );
