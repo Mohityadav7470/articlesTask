@@ -266,7 +266,7 @@ const listOlderVersions = async (
   next: NextFunction
 ) => {
   try {
-    const userInfo = req.user as JwtPayload; // Assuming req.user is set by auth middleware
+    const userInfo = req.user as JwtPayload; 
     if (!userInfo || !userInfo.id) {
       throw new Error("User not authenticated");
     }

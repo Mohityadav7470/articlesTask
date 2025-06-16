@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../model/user.model";
 import { Article } from "../model/article.model";
+import { seeder } from "../seed/userSeeder";
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
@@ -27,4 +28,15 @@ const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllUsers, getUserById };
+const generateFakeUser = async (req: Request, res: Response) => {
+    try {
+        const user = seeder(5,5,2);
+        res.status(201).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Failed to generate fake user" });
+        return;
+    }
+}
+
+export { getAllUsers, getUserById, generateFakeUser };
