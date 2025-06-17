@@ -5,19 +5,25 @@ import { ArticleVersion } from "../model/articleVersion.model";
 import { faker } from "@faker-js/faker";
 
 
-export const seeder = async (
+export const userSeeder = async (
   totalUser: number,
   totalArticles: number,
   totalVersions: number
 ) => {
   try {
+    const existsUser = await User.find({ role: "user" }).countDocuments();
+    if (existsUser > 0) {
+      console.log("User already exists. Skipping seeding.");
+      return;
+    }
     let allUsers: object[] = [];
     for (let i = 0; i < totalUser; i++) {
       // fake user created
       const name = faker.person.firstName();
       const email = faker.internet.email();
       const password = faker.internet.password();
-      const newUser = new User({ name, email, password });
+      const role = "user";
+      const newUser = new User({ name, email, password, role });
       allUsers.push({ email, password });
       await newUser.save();
 

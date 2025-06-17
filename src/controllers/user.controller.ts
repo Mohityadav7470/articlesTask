@@ -8,6 +8,15 @@ import { AuthenticatedRequest } from "../middleware/verifyAccessToken";
 import { JwtPayload } from "jsonwebtoken";
 import { CustomError } from "../utils/customError";
 
+const test = async (req: Request, res: Response) => {
+  try {
+    res.status(200).json({ message: "API is working" });
+  } catch (error) {
+    console.error("Error in test endpoint:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password }: IUser = req.body;
@@ -97,7 +106,7 @@ const logoutUser = async (req: Request, res: Response) => {
 const createArticle = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userInfo = req.user as JwtPayload; // Assuming req.user is set by auth middleware
-    if (!userInfo || !userInfo.id) {
+    if (!userInfo?.id) {
       throw new Error("User not authenticated");
     }
     const userId: JwtPayload = userInfo.id; // Assumes req.user is set by auth middleware
@@ -145,17 +154,37 @@ const createArticle = async (req: AuthenticatedRequest, res: Response) => {
 const listArticles = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userInfo = req.user as JwtPayload; // Assuming req.user is set by auth middleware
-    if (!userInfo || !userInfo.id) {
+    if (!userInfo?.id) {
       throw new Error("User not authenticated");
     }
     const userId: JwtPayload = userInfo.id; // Assumes req.user is set by auth middleware
+    const isAdmin = await User.findById(userId).then(
+      (user) => user?.role === "admin"
+    );
+    if (isAdmin) {
+      const articles = await Article.find({ isDeleted: false }).populate(
+        "user",
+        "name email"
+      );
+      res.status(200).json(articles);
+      return;
+    }
     const articles = await Article.find(
       { user: userId, isDeleted: false },
       { __v: 0, versions: 0, user: 0, isDeleted: 0 }
-    ).sort({ createdAt: -1 }); // Sort by creation date, most recent first
+    )
+      .sort({ createdAt: -1 })
+      .populate("user", "name email role");
+    const adminArticles = await User.find(
+      { role: "admin" },
+      { articles: 1 }
+    ).populate("articles", "title description createdAt");
+
+    const flatAdminArticles = adminArticles.flatMap((admin) => admin.articles);
+    const mergedArticles = [...articles, ...flatAdminArticles]
     res.status(200).json({
       message: "Articles retrieved successfully",
-      articles: articles,
+      articles: mergedArticles,
     });
   } catch (error) {
     console.error("Error retrieving articles:", error);
@@ -266,8 +295,8 @@ const listOlderVersions = async (
   next: NextFunction
 ) => {
   try {
-    const userInfo = req.user as JwtPayload; 
-    if (!userInfo || !userInfo.id) {
+    const userInfo = req.user as JwtPayload;
+    if (!userInfo?.id) {
       throw new Error("User not authenticated");
     }
     const articleId = req.params.id;
@@ -327,6 +356,7 @@ const deleteArticle = async (
 };
 
 export {
+  test,
   registerUser,
   loginUser,
   logoutUser,

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import connectDB from "../config/db";
-import { faker } from "@faker-js/faker";
+import { de, faker } from "@faker-js/faker";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User, IUser } from "../model/user.model";
@@ -20,22 +20,28 @@ const generateToken = (userId: string) => {
 
 const seed = async () => {
   try {
-    const adminPassword = await bcrypt.hash("admin123", 10);
+    const existsAdmin = await User.findOne({ role: "admin" });
+    if (existsAdmin) {
+      console.log("Admin user already exists. Skipping seeding.");
+      return;
+    }
+
     const admin: IUser = await User.create({
       name: "Admin",
       email: "admin@example.com",
-      password: adminPassword,
+      role: "admin",
+      password: "admin123",
     });
 
     const adminToken = generateToken(admin._id.toString());
-    console.log(`✅ Admin JWT: ${adminToken}`);
+    console.log(`Admin JWT: ${adminToken}`);
 
-    console.log("🚀 Seeding complete.");
+    console.log("Seeding complete.");
     process.exit(0);
   } catch (err) {
-    console.error("❌ Error during seeding:", err);
+    console.error("Error during seeding:", err);
     process.exit(1);
   }
 };
 
-seed();
+export default seed;

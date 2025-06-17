@@ -1,4 +1,5 @@
 import {
+  test,
   registerUser,
   loginUser,
   logoutUser,
@@ -12,6 +13,7 @@ import { Router } from "express";
 import { verifyAccessToken } from "../middleware/verifyAccessToken";
 
 const router = Router();
+router.get("/test", test);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/logout", logoutUser);

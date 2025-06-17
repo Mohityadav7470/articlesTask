@@ -8,6 +8,7 @@ interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
+  role: string;
   password: string;
   articles: mongoose.Types.ObjectId[];
   generateAccessToken(): string;
@@ -18,6 +19,7 @@ const UserSchema = new Schema<IUser>({
   _id: { type: Schema.Types.ObjectId, auto: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
+  role: { type: String, enum: ["user", "admin"], default: "user" },
   password: { type: String, required: true },
   articles: [{ type: Schema.Types.ObjectId, ref: "Article" }],
 });
