@@ -5,7 +5,7 @@ dotenv.config({
 })
 const genAI = new GoogleGenerativeAI("AIzaSyBwhFNgW_-uQ00DC4U3-RrCgTjv87BCS7k");
 
-export const getDescriptionFromDeepAI = async (
+export const getDescriptionFromGoogleGenerativeAI = async (
   topic: string
 ): Promise<string> => {
   const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });

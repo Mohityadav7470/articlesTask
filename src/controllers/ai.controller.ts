@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getDescriptionFromDeepAI } from "../services/ai.service";
+import { getDescriptionFromGoogleGenerativeAI } from "../services/ai.service";
 
 export const generateDescription = async (req: Request, res: Response) => {
   const { topic } = req.body;
@@ -9,10 +9,10 @@ export const generateDescription = async (req: Request, res: Response) => {
   }
 
   try {
-    const description = await getDescriptionFromDeepAI(topic);
+    const description = await getDescriptionFromGoogleGenerativeAI(topic);
     res.json({ topic, description });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to get description from OpenAI." });
+    res.status(500).json({ error: "Failed to get description from Google Generative AI." });
   }
 };
